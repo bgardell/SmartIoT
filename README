@@ -1,0 +1,24 @@
+# clingoWeb Python web service
+
+This clingo web service is designed to provide Answer Set Programming over the web for IoT and Mobile applications.
+
+The service utilizes the clingo grounder / solver for logic programs, clingo5 python module and cherrypy web framework.
+
+
+## Term Definition usage
+
+The term definition file terms.json should contain the variable names and types
+with the exact same format displayed in the example terms.json file.
+
+Any terms can be defined using the TermDefinition module in the future to generate this specific output.
+
+All terms in #show aggregates should be defined in the terms.json file prior to use.
+
+## Setting the main logic program for rules and \#show aggregates
+
+
+## POSTing facts to the service
+
+
+## GET output
+

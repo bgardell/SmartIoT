@@ -1,0 +1,53 @@
+{
+    "terms":
+    [{"Event_Name": "reading", "Duration": 60, "name": "event_duration"}
+,
+{"Event_Name": "reading", "Amount": 1, "Repeat": "weekdays", "name": "event_repeat"}
+,
+{"Event_Name": "reading", "Amount": 1, "Repeat": "weekends", "name": "event_repeat"}
+,
+{"Event_Name": "reading", "Start": 400, "End": 1200, "name": "event_domain"}
+,
+{"Event_Name": "reading", "Amount": 0, "name": "buffer"}
+,
+{"AmountBefore": 25, "Event_NameAfter": "reading", "Event_NameBefore": "breakfast", "name": "pref_order", "Weight": 1}
+,
+{"Event_Name": "exercise", "Duration": 45, "name": "event_duration"}
+,
+{"Event_Name": "exercise", "Start": 420, "End": 600, "name": "event_domain"}
+,
+{"Event_Name": "exercise", "Start": 1020, "End": 1320, "name": "event_domain"}
+,
+{"Event_Name": "exercise", "Amount": 5, "Repeat": "daily", "name": "event_repeat"}
+,
+{"AmountBefore": 1, "Event_NameAfter": "breakfast", "Event_NameBefore": "exercise", "name": "pref_order", "Weight": 1}
+,
+{"AmountBefore": 1, "Event_NameAfter": "lunch", "Event_NameBefore": "exercise", "name": "pref_order", "Weight": 1}
+,
+{"AmountBefore": 1, "Event_NameAfter": "dinner", "Event_NameBefore": "exercise", "name": "pref_order", "Weight": 1}
+,
+{"AmountBefore": 1, "Event_NameAfter": "brunch", "Event_NameBefore": "exercise", "name": "pref_order", "Weight": 1}
+,
+{"Event_Name": "exercise", "Amount": 10, "name": "buffer"}
+,
+{"Event_Name": "exercise", "name": "pref_weather", "Weight": 2, "Weather_Type": "good"}
+,
+{"Event_Name": "exercise", "Session_Name": "morning", "name": "pref_session", "Weight": 1}
+,
+{"Event_Name": "lunch", "Duration": 30, "name": "event_duration"}
+,
+{"Event_Name": "lunch", "Amount": 5, "Repeat": "daily", "name": "event_repeat"}
+,
+{"Event_Name": "lunch", "Start": 720, "End": 900, "name": "event_domain"}
+,
+{"Event_Name": "lunch", "Amount": 0, "name": "buffer"}
+,
+{"Event_Name": "lawnMowing", "Duration": 60, "name": "event_duration"}
+,
+{"Event_Name": "lawnMowing", "Start": 420, "End": 1260, "name": "event_domain"}
+,
+{"Event_Name": "lawnMowing", "Amount": 1, "Repeat": "weekly", "name": "event_repeat"}
+,
+{"Event_Name": "lawnMowing", "Amount": 0, "name": "buffer"}
+]
+}
