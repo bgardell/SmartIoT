@@ -9,8 +9,17 @@ class UserHandler:
         term_id = self.termDb[userName].insert_one(term.termJson).inserted_id
         return term_id
 
+    def clearCollection(self, userName):
+        try:
+            self.termDb[userName].remove({})
+        except Exception as e:
+            print "Could not clear collection"
+
     def getAllTerms(self, userName):
-        return self.termDb[userName]
+        allTerms = []
+        for term in self.termDb[userName].find():
+            allTerms.append(term)
+        return allTerms
 
 class User:
     name = ""

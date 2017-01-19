@@ -39,37 +39,20 @@ class ASPWeb(object):
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
-    def addFact(self, user):
-        kbJson = cherrypy.request.json
-        try:
-            for term in kbJson["terms"]:
-                termAdded = Term()
-                termAdded.termFromJson(self.mProcessor.termDefinitions, term)
-                self.terms.append(termAdded)
-            return { "Result" : "Success" }
-        except Exception as e:
-            return { "Result" : "Failed", "Reason" : e.message }
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
-    def showFacts(self, user):
-        eventsToSchedule = {}
-        for event in self.terms:
-            eventsToSchedule.update( event.termJson )
-
-        return eventsToSchedule
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
     def getOptimumModel(self, user):
         prg = Control()
-        prg.load("../../scenarios/test.lp")
-        with prg.builder() as prgBuilder: 
-            for term in self.terms:
-                symTerm = '' + str(term.toSymbol(self.mProcessor)) + '.'
+        prg.load("../scenarios/test.lp")
+        self.terms = self.userHandler.getAllTerms(user)
+        print self.terms
+
+        with prg.builder() as prgBuilder:
+            for termBson in self.terms:
+                print termBson
+                termObject = Term()
+                termObject.termFromJson(self.mProcessor.termDefinitions, termBson)
+                symTerm = '' + str(termObject.toSymbol(self.mProcessor)) + '.'
                 parse_program(symTerm, lambda addTerm: prgBuilder.add(addTerm))
+        self.userHandler.clearCollection(user)
         try:
             solverOutput = self.mProcessor.solveControl(prg)
             return solverOutput
