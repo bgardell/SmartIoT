@@ -60,5 +60,5 @@ class ASPWeb(object):
             print e
             return { "Result" : "Failed", "Reason" : e.message }
 
-
+cherrypy.server.socket_host =  '0.0.0.0'
 cherrypy.quickstart(ASPWeb())
