@@ -27,20 +27,20 @@ class ASPWeb(object):
                 self.userHandler.addTerm(user, termAdded)
             return { "Result" : "Success" }
         except Exception as e:
-            return { "Result" : "Failed", "Reason" : e.message } 
+            return { "Result" : "Failed", "Reason" : e.message }
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def showTerms(self, user):
         allTerms = self.userHandler.getAllTerms(user)
-        allTermsJson = {"terms": []} 
-        
+        allTermsJson = {} 
         for term in allTerms:
-            allTermsJson["terms"].append(term)
-       
-        print allTermsJson
-        return allTermsJson
+            print term
+        
+        json.dumps(allTerms, default=json_util.default)
+        
+        return allTerms
 
 
     @cherrypy.expose
@@ -58,30 +58,23 @@ class ASPWeb(object):
         prg = Control()
         prg.load("../scenarios/test.lp")
         self.terms = self.userHandler.getAllTerms(user)
+        print self.terms
 
         with prg.builder() as prgBuilder:
             for termBson in self.terms:
+                print termBson
                 termObject = Term()
-                termObject.termFromBson(self.mProcessor.termDefinitions, termBson)
+                termObject.termFromJson(self.mProcessor.termDefinitions, termBson)
                 symTerm = '' + str(termObject.toSymbol(self.mProcessor)) + '.'
                 parse_program(symTerm, lambda addTerm: prgBuilder.add(addTerm))
+        self.userHandler.clearCollection(user)
         try:
             solverOutput = self.mProcessor.solveControl(prg)
             return solverOutput
         except Exception as e:
             print e
             return { "Result" : "Failed", "Reason" : e.message }
-    
-    @cherrypy.expose
-    def index(self):
-        return file("schedulerHTML/viewEvents.html")
 
 cherrypy.response.headers["Access-Control-Allow-Origin"] = "*"
 cherrypy.config.update({'server.socket_host': '0.0.0.0'})
-cherrypy.config.update({'tools.staticdir.on': True,
-                'tools.staticdir.dir':
-                '/home/ubuntu/aspWeb/schedulerHTML'
-                               })
-
-
 cherrypy.quickstart(ASPWeb())

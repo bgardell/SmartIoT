@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Scheduling with Answer Set Programming</title>
+        <!-- Bootstrap core CSS -->
+        <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="navbar.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+    <body>
+        <div class="modal fade pg-show-modal" id="scheduleOutputModal" tabindex="-1" role="dialog" aria-hidden="true"> 
+            <div class="modal-dialog"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>                         
+                        <h4 class="modal-title">Schedule output</h4> 
+                    </div>                     
+                    <div class="modal-body" id="scheduleOutput"> 
+</div>                     
+                    <div class="modal-footer"> 
+                        <center>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </center>                         
+                    </div>                     
+                </div>                 
+            </div>             
+        </div>
+        <div class="container">
+            <!-- Static navbar -->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">ASP Scheduler</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+</li>
+                            <li class="active">
+                                <a href="viewEvents.html">View Events</a>
+                            </li>
+                            <li>
+                                <a href="#">Help (Blank)<br></a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="active"></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+                <!--/.container-fluid -->
+            </nav>
+            <!-- Main component for a primary marketing message or call to action -->
+            <div class="jumbotron">
+                <button type="button" data-toggle="modal" data-target="#addEventModal" class="btn btn-primary" id="addEventButton" data-pg-tree-id="40901">Add Task
+                    <br>
+                </button>
+                <button type="button" data-toggle="modal" data-target="#scheduleOutputModal" class="btn btn-primary" id="getScheduleButton" data-pg-tree-id="40901" onclick="getOptimumModel()">Get Schedule&nbsp;
+                    <br>
+                </button>
+                <div class="container pg-empty-placeholder" id="termList"></div>
+                <div class="modal fade pg-show-modal" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true"> 
+                    <div class="modal-dialog"> 
+                        <div class="modal-content"> 
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>                             
+                            <h4 class="modal-title" id="taskNameTitle">{Task} title</h4> 
+                            <div class="modal-body" id="taskModalBody"> 
+                                <p><br></p>
+                            </div>                             
+                            <center>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </center>                             
+                        </div>                         
+                    </div>
+                </div>
+                <div class="modal fade pg-show-modal" id="addEventModal" tabindex="-1" role="dialog" aria-hidden="true"> 
+                    <div class="modal-dialog"> 
+                        <div class="modal-content"> 
+                            <div class="modal-header"> 
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>                                 
+                                <h4 class="modal-title">Add Event To Schedule</h4> 
+                            </div>                             
+                            <div class="jumbotron">
+                                <h1>Add Event To Schedule</h1>
+                                <p></p>
+                                <div class="container"></div>
+                                <form role="form"> 
+                                    <div class="form-group"> 
+</div>                                     
+                                    <div class="form-group"> 
+</div>                                     
+                                    <div class="checkbox"> 
+</div>
+                                    <div class="form-group"> 
+                                        <label class="control-label" for="formInput448">Field label</label>
+                                        <input type="text" class="form-control" id="eventName" placeholder="Event Name">
+                                    </div>
+                                    <div class="form-group"> 
+                                        <label class="control-label" for="formInput557">Duration</label>
+                                        <input type="text" class="form-control" id="eventDuration" placeholder="Duration (minutes)">
+                                    </div>
+                                    <div class="form-group"> 
+                                        <label class="control-label" for="formInput436">Domain Start
+                                            <br>
+                                        </label>
+                                        <input type="text" class="form-control" id="eventDomainStart" placeholder="Time Domain Start">
+                                    </div>
+                                    <div class="form-group"> 
+                                        <label class="control-label" for="formInput462">Domain End
+                                            <br>
+                                        </label>
+                                        <input type="text" class="form-control" id="eventDomainEnd" placeholder="Time Domain End">
+                                    </div>                                     
+                                </form>
+                                <button type="submit" class="btn" onclick="sendEventData()">Submit</button>
+                            </div>                             
+                            <div class="modal-footer"> 
+                                <center>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="setupTasks()">Close</button>
+                                </center>                                 
+                            </div>                             
+                        </div>                         
+                    </div>                     
+                </div>
+            </div>             
+        </div>         
+        <!-- /container -->
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+        <script> 
+            
+ 		function openTaskModal( button ) {
+            var allNamedTerms = sessionStorage.getItem("allNamedTerms");
+            var taskTerms = JSON.parse(allNamedTerms)[button.id];
+            
+            var startTime;
+            var endTime;
+            var duration;
+            var repeat;
+            var repeatAmount;
+            $("#taskNameTitle").html("<center><b>" + button.id + "</b></center>");                
+
+            for ( term in taskTerms )
+            {
+                var termJson = JSON.parse(taskTerms[term]);
+                var termName = termJson.name;
+				if (termJson.Event_Name == button.id)
+                {
+                    if ( termName == "event_domain" )
+                    {
+                        startTime = JSON.stringify(termJson.Start);
+                        endTime = JSON.stringify(termJson.End);
+                    } else if ( termName === "event_duration" )
+                    {
+                        duration = JSON.stringify(termJson.Duration);
+                    } else if ( termName == "event_repeat" )
+                    {
+                        repeat = JSON.stringify(termJson.Repeat);
+                        repeatAmount = JSON.stringify(termJson.Amount);
+                    }
+                }
+
+            }
+            
+            $("#taskModalBody").html(setupTaskHtml(startTime, endTime, duration, repeat, repeatAmount));
+
+        }
+            
+        function setupTaskHtml( start, end, duration, repeat, repeatAmount ) {
+            var taskHtmlString = "";
+            taskHtmlString += "<center>"
+            taskHtmlString += "This task starts at <b> " + start + " </b>.<br>";
+            taskHtmlString += "This task ends at <b> " + end + " </b>.<br>";
+            taskHtmlString += "This task's duration is <b> " + duration + " </b> minutes.<br>";
+            taskHtmlString += "This task repeats <b> " + repeatAmount + " </b> times <b> " + repeat + "</b>.<br>";
+            
+            return taskHtmlString;
+        }
+            
+         
+        
+        </script>
+        <script>
+            
+         setupTasks();
+         
+         function setupTasks() {
+         	 $("#termList").html("");
+             $.get( "http://www.pipsoft.tech:8080/uitest/showTerms", function( data ) {
+                 sessionStorage.clear()
+                 sessionStorage.setItem("allTerms", data)
+
+                 var uniqueEvents = []
+                 var taskButtons = []
+                 var allNamedTerms = {}
+				 var numTasks = 0;
+                 for ( term in data["terms"] )
+                 {
+                     termObj = data["terms"][term];
+                     termObj = $.parseJSON(termObj);
+
+                     if ( $.inArray(termObj.Event_Name, uniqueEvents) === -1 && termObj.Event_Name )
+                     {
+                         uniqueEvents.push(termObj.Event_Name);
+
+                         buttonHtml = "<button type=\"button\" data-toggle=\"modal\" data-target=\"#taskModal\" class=\"btn btn-primary\" id=" + termObj.Event_Name + " onclick=\"openTaskModal( " + termObj.Event_Name + " )\">" + termObj.Event_Name + "</button>";					
+
+                         $("#termList").append( buttonHtml );
+                         numTasks++;
+                         if ( numTasks % 3 == 0 )
+                         {
+                             $("#termList").append( "<br>" );
+                         }
+                             
+                     }
+
+                     if ( termObj.Event_Name )
+                     {
+                        if (allNamedTerms[termObj.Event_Name])
+                        {
+                            allNamedTerms[termObj.Event_Name].push(JSON.stringify(termObj));
+                        } else {
+                             allNamedTerms[termObj.Event_Name] = [];
+                             allNamedTerms[termObj.Event_Name].push(JSON.stringify(termObj));
+                        }
+                     }
+                 }
+
+                 sessionStorage.setItem("uniqueEvents", uniqueEvents);
+                 sessionStorage.setItem("allNamedTerms", JSON.stringify(allNamedTerms));
+             });
+         }
+
+        </script>
+        <script>
+                function sendEventData() {
+                var eventName = document.getElementById("eventName").value;
+                var eventDuration = document.getElementById("eventDuration").value;
+                var eventStart = document.getElementById("eventDomainStart").value;
+                var eventEnd = document.getElementById("eventDomainEnd").value;
+                
+                var eventDomain = {
+                    "name": "event_domain",
+                    "Event_Name": eventName,
+                    "Start": Number(eventStart),
+                    "End": Number(eventEnd)
+                };
+                
+                var eventDuration = {
+                    "name": "event_duration",
+                    "Event_Name": eventName,
+                    "Duration": Number(eventDuration)
+                };
+                
+                var eventBuffer = {
+                    "name": "buffer",
+                    "Event_Name": eventName,
+                    "Amount": 0
+                };
+                
+                var eventRepeat = {
+                    "name": "event_repeat",
+                    "Event_Name": eventName,
+                    "Amount": 1, 
+                    "Repeat": "weekly"
+                };
+                
+                var eventTerms = [];
+                eventTerms.push(eventDomain);
+                eventTerms.push(eventDuration);
+                eventTerms.push(eventBuffer);
+                eventTerms.push(eventRepeat);
+                
+                var eventTermsJson = {
+                    "terms": eventTerms
+                };
+                                
+                var jsonData = JSON.stringify(eventTermsJson);
+                console.log(jsonData);
+                
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "http://www.pipsoft.tech:8080/uitest/addTerm",
+                    data: jsonData,
+                    success: function () {
+                		alert("Success");
+            		},
+                    always: function () {
+                        alert("Finished with errors");
+                    },
+                    dataType: "json"
+                });
+            }
+        
+        
+        </script>
+        <script>
+            
+            function getOptimumModel() {
+        		$.get( "http://www.pipsoft.tech:8080/uitest/getOptimumModel", function( data ) {
+                    
+                    for ( schedule in data )
+                    {
+                        var scheduleJson = data[schedule];
+                        $("#scheduleOutput").append( buildScheduleSlot( scheduleJson ) );
+                    }
+                });
+            }
+            
+            function buildScheduleSlot( scheduleJson ) {
+                
+                var dateJson = scheduleJson["date"];
+                var day = dateJson.DD;
+                var month = dateJson.MM;
+                var year = dateJson.YYYY;
+                
+                var eventName = scheduleJson.Event;
+                var eventLoc = scheduleJson.Location;
+                var eventStart = scheduleJson.DStart;
+                var eventEnd = scheduleJson.DEnd;
+                
+                var scheduleHtml = "<li> Schedule " + eventName + " between " + eventStart + " and " + eventEnd + " ";
+                scheduleHtml += " on " + month + "-" + day + "-" + year + " at " + eventLoc + "<br>";
+                
+                return scheduleHtml;
+            }
+                    
+        </script>
+    </body>
+</html>

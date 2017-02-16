@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson import json_util
 
 class UserHandler:
     def __init__(self):
@@ -18,7 +19,7 @@ class UserHandler:
     def getAllTerms(self, userName):
         allTerms = []
         for term in self.termDb[userName].find():
-            allTerms.append(term)
+            allTerms.append(json_util.dumps(term))
         return allTerms
 
 class User:

@@ -8,6 +8,7 @@
 '''
 
 from clingo import Symbol, SymbolType, Function, Number, String, parse_term
+from ast import literal_eval
 import json
 
 class ModelProcessor:
@@ -124,7 +125,13 @@ class Term:
 
     def termFromJson(self, termDefinitions, symbolJson):
         self.termJson = symbolJson
-        self.name = symbolJson["name"]
+        
+        self.name = self.termJson['name']
+    
+    def termFromBson(self, termDefinitions, symbolJson):
+        self.termJson = json.loads(symbolJson)
+        
+        self.name = self.termJson['name']
     
     def toSymbol(self, modelProcessor):
         return modelProcessor.jsonToSymbol(self.termJson)
