@@ -10,6 +10,8 @@ framework.
 
 cherrpy
 clingo python module
+pymongo
+MongoDB instance
 
 **Term Definition usage**
 
@@ -47,5 +49,4 @@ _testDataIn.txt –_ Data to be POSTED to the HTTP server.
 The web service has an HTTP GET endpoint at /getOptimumModel. This will take all facts POSTed to the server and ground
 them alongside the default logic program setup in the server settings. All #show aggregates in the main logic program
 should have their predicates and terms defined in the terms.json file.
-
 

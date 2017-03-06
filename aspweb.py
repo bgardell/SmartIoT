@@ -56,7 +56,7 @@ class ASPWeb(object):
     @cherrypy.tools.json_out()
     def getOptimumModel(self, user):
         prg = Control()
-        prg.load("../scenarios/test.lp")
+        prg.load("../scenarios/simpTest.lp")
         self.terms = self.userHandler.getAllTerms(user)
 
         with prg.builder() as prgBuilder:
