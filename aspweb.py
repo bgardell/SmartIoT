@@ -2,18 +2,41 @@ import sys
 from clingo import Control, parse_program
 
 import cherrypy
-import cherrypy_cors
 import json
 from bson import json_util
 
 from termprocessor.processor import ModelProcessor, Term
 from utilities.userutil import UserHandler
+from utilities.skillutil import SkillHandler
 
 @cherrypy.popargs('user')
 class ASPWeb(object):
     terms = []
     mProcessor = ModelProcessor()
     userHandler = UserHandler()
+    skillHandler = SkillHandler()
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def addSkill(self, user):
+        skillJson = cherrypy.request.json
+        addSkillResult = self.skillHandler.addSkill(skillJson)
+        return addSkillResult
+
+    @cherrypy.expose
+    @cherrypy.popargs('skillName')
+    @cherrypy.tools.json_out()
+    def skill(self, skillName):
+        skillInfo = self.skillHandler.getSkill(skillName)
+        return skillInfo
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def getAllSkills(self):
+        skillInfo = self.skillHandler.getAllSkills()
+        print skillInfo
+        return skillInfo
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
