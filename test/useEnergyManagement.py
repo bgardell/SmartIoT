@@ -3,23 +3,26 @@ import base64
 
 # Current Devices Used Posts To Hub In Regular Intervals
 currentDevices = {
-        "deviceName" : "AirConditioner"
+        "deviceName" : "\"AirConditioner\""
 }
-r = requests.post("http://localhost:8080/addDeviceData/DevicesUsed", currentDevices)
+r = requests.post("http://localhost:8080/addDeviceData/DevicesUsed", json=currentDevices)
+print r.text
 
 # Post 3D Sensor Logging to service
 movementSensorData = [{
-            "registeredObject" : "John",
+            "registeredObject" : "\"John\"",
             "dayMinute" : 360
             },
             {
-            "registeredObject" : "John",
+            "registeredObject" : "\"John\"",
             "dayMinute" : 390
             }
 ]
 
 for dataRecord in movementSensorData:
-    r = requests.post("http://localhost:8080/addDeviceData/3DSensor", dataRecord)
+    r = requests.post("http://localhost:8080/addDeviceData/3DSensor", json=dataRecord)
+
+print r.text
 
 weatherData = [ 
   {"temperatureRecorded" : 78, "timeLogged": 1100 },
@@ -30,13 +33,14 @@ weatherData = [
 ]
 
 for dataRecord in weatherData:
-    r = requests.post("http://localhost:8080/addDeviceData/WeatherSensor", dataRecord)
+    r = requests.post("http://localhost:8080/addDeviceData/WeatherSensor", json=dataRecord)
+print r.text
 
 r = requests.get("http://localhost:8080/useQueryWithDatabase/deviceNeededQuery")
 
 print r.text
 
 # Clear Data for fresh use
-#requests.get("http://localhost:8080/clearDeviceData/DevicesUsed")
-#requests.get("http://localhost:8080/clearDeviceData/3DSensor")
-#requests.get("http://localhost:8080/clearDeviceData/WeatherSensor")
+requests.get("http://localhost:8080/clearDeviceData/DevicesUsed")
+requests.get("http://localhost:8080/clearDeviceData/3DSensor")
+requests.get("http://localhost:8080/clearDeviceData/WeatherSensor")

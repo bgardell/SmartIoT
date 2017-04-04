@@ -12,8 +12,8 @@ class ASPWeb(object):
     queryHandler = QueryHandler()
     clingoSolver = ClingoSolver()
 
-    @cherrypy.expose
     @cherrypy.popargs('deviceName')
+    @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def addDeviceData(self, deviceName):
@@ -30,6 +30,7 @@ class ASPWeb(object):
         return clearDataResult
 
     @cherrypy.expose
+    @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def addQuery(self):
         queryJson = cherrypy.request.json
@@ -63,6 +64,7 @@ class ASPWeb(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def useQueryWithDatabase(self, queryName):
+        print "Using Query"
         queryInfo = self.queryHandler.getQueryInfo(queryName)
 
         if queryInfo is None:

@@ -19,12 +19,12 @@ class QueryHandler:
             return {"Result" : "Failure", "Reason" : e.message}
 
         if self.queryCollection.find({"queryName" : queryName}).count() > 0:
-            return { "Result " : "Failure", "Reason" : "query Already Exists!"}
+            return { "Result " : "Failure", "Reason" : "Query Already Exists!"}
 
         queryInfo["mainLogic"] = str(queryInfo["mainLogic"])
         newQuery = Query(queryInfo)
         queryId = self.queryCollection.insert_one(newQuery.toJson()).inserted_id
-        return {"Result" : "Success", "SkillId" : str(queryId)}
+        return {"Result" : "Success", "QueryId" : str(queryId)}
 
     def deleteQuery(self, queryName):
         try:

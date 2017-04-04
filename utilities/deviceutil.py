@@ -12,7 +12,7 @@ class DeviceHandler:
         return {"Result" : "Success"}
 
     def clearDeviceData(self, deviceName):
-        self.deviceDb.deviceName.remove({})
+        self.deviceDb[deviceName].remove({})
         return {"Result" : "Success"}
 
 

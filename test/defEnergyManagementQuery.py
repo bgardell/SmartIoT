@@ -51,7 +51,7 @@ devices = [{
         "dataMappings": [ {
             "predicateName" : "deviceOn",
             "mappingVariables" : ["DeviceName"],
-            "database":
+            "recordData":
             {
                 "DeviceName" : "deviceName"
             }
@@ -67,7 +67,6 @@ queryDefinition["inputDefinition"] = queryInput
 queryDefinition["outputDefinition"] = queryOutput
 queryDefinition["devicesUsed"] = devices
 queryDefinition["queryDescription"] = "Determine if a device can be switched off"
-print json.dumps(queryDefinition, indent=4, sort_keys=False)
 
 r = requests.post("http://localhost:8080/addQuery", json=queryDefinition)
 
