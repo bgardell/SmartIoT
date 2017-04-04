@@ -1,8 +1,12 @@
 import requests
-import base64
+import json
 
 mainLogic = """
 canTurnOff("AirConditioner") :- userNotHome, deviceOn("AirConditioner"), decreasingTemp.
+decreasingTemp :- temperature(Degrees, Time), temperature(Degrees1, Time1), Time > Time1, Degrees < Degrees1.
+userNotHome :- movement("John", Time), movement("John", Time1), Time > Time1, currentTime(CTime), CTime-Time > 90.
+
+currentTime(1180).
 """
 
 queryInput =  { "predicates" : [] }
@@ -45,7 +49,7 @@ devices = [{
     {
         "name" : "DevicesUsed",
         "dataMappings": [ {
-            "mappingName" : "deviceOn",
+            "predicateName" : "deviceOn",
             "mappingVariables" : ["DeviceName"],
             "database":
             {
@@ -63,7 +67,7 @@ queryDefinition["inputDefinition"] = queryInput
 queryDefinition["outputDefinition"] = queryOutput
 queryDefinition["devicesUsed"] = devices
 queryDefinition["queryDescription"] = "Determine if a device can be switched off"
-print queryDefinition
+print json.dumps(queryDefinition, indent=4, sort_keys=False)
 
 r = requests.post("http://localhost:8080/addQuery", json=queryDefinition)
 

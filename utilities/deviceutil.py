@@ -6,8 +6,13 @@ class DeviceHandler:
         self.deviceDb = self.client.deviceDb
 
     # Simply add data to the database to be queried later.
-    def addData(self, deviceName):
-        self.deviceDb.deviceName.insert_one(deviceName)
+    def addData(self, deviceName, deviceData):
+        print "adding " + str(deviceData) + " to " + deviceName
+        self.deviceDb[deviceName].insert(deviceData)
+        return {"Result" : "Success"}
+
+    def clearDeviceData(self, deviceName):
+        self.deviceDb.deviceName.remove({})
         return {"Result" : "Success"}
 
 

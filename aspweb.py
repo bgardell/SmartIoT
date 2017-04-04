@@ -5,7 +5,6 @@ from utilities.deviceutil import DeviceHandler
 from utilities.queryutil import QueryHandler
 from utilities.clingoutil import ClingoSolver
 
-@cherrypy.popargs('user')
 class ASPWeb(object):
     terms = []
     mProcessor = ModelProcessor()
@@ -14,14 +13,23 @@ class ASPWeb(object):
     clingoSolver = ClingoSolver()
 
     @cherrypy.expose
+    @cherrypy.popargs('deviceName')
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def addDeviceData(self, deviceName):
-        addDataResult = self.deviceHandler.addData(deviceName)
+        print "test"
+        deviceData = cherrypy.request.json
+        print deviceData
+        addDataResult = self.deviceHandler.addData(deviceName, deviceData)
         return addDataResult
 
+    @cherrypy.popargs('deviceName')
     @cherrypy.expose
-    @cherrypy.tools.json_in()
+    def clearDeviceData(self, deviceName):
+        clearDataResult = self.deviceHandler.clearDeviceData(deviceName)
+        return clearDataResult
+
+    @cherrypy.expose
     @cherrypy.tools.json_out()
     def addQuery(self):
         queryJson = cherrypy.request.json
@@ -61,7 +69,7 @@ class ASPWeb(object):
             return {"Result": "Failure", "Reason": "Unable to fetch query info. Does this query exist?"}
 
         solverOutput = self.clingoSolver.solveQueryWithDeviceDatabase(queryInfo)
-        return {"output" : solverOutput}
+        return {"output" : str(solverOutput)}
 
     @cherrypy.expose
     @cherrypy.tools.json_out()

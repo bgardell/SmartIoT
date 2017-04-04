@@ -1,6 +1,7 @@
 from clingo import *
 from symbolprocessor.processor import Predicate, ModelProcessor
 from deviceutil import DeviceHandler
+import os.path
 
 
 class ClingoSolver(object):
@@ -45,20 +46,25 @@ class ClingoSolver(object):
     def solveQueryWithDeviceDatabase(self, queryInfo):
         deviceHandler = DeviceHandler()
         prg = Control()
+        fileString = "../scenarios/" + queryInfo["queryName"]
+
         try:
-            prg.load("../scenarios/" + queryInfo["queryName"])
+            if os.path.exists(fileString):
+                prg.load("../scenarios/" + queryInfo["queryName"])
+            else:
+                with open(fileString, "w+") as f:
+                    f.write(queryInfo["mainLogic"])
         except Exception, e:
             print e.message
             print e.args
-            return {"Result" : "Failure", "Reason" : "Could not load file"}
+            return {"Result" : "Failure", "Reason" : "Could not load main logic"}
 
         devicesUsed = queryInfo["devicesUsed"]
         databasePredicates = deviceHandler.mapCurrentDataToPredicates(devicesUsed)
-
+        print databasePredicates
         with prg.builder() as prgBuilder:
             for dbPredicate in databasePredicates:
-                parse_program(symTerm, lambda addTerm: prgBuilder.add(dbPredicate + '.'))
-
+                parse_program(dbPredicate + '.', lambda addTerm: prgBuilder.add(addTerm))
         try:
             solverOutput = self.mProcessor.solveControlRawOutput(prg)
             return solverOutput

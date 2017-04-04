@@ -11,18 +11,18 @@ class QueryHandler:
         self.queryCollection = self.queryDb["queries"]
         self.queryValidator = QueryValidator()
 
-    def addQuery(self, query):
-        queryName = query["queryName"]
+    def addQuery(self, queryInfo):
+        queryName = queryInfo["queryName"]
         try:
-            self.queryValidator.validateInput(query)
+            self.queryValidator.validateInput(queryInfo)
         except ValidationError, e:
             return {"Result" : "Failure", "Reason" : e.message}
 
         if self.queryCollection.find({"queryName" : queryName}).count() > 0:
             return { "Result " : "Failure", "Reason" : "query Already Exists!"}
 
-        query["mainLogic"] = str(query["mainLogic"])
-        newQuery = Query(query)
+        queryInfo["mainLogic"] = str(queryInfo["mainLogic"])
+        newQuery = Query(queryInfo)
         queryId = self.queryCollection.insert_one(newQuery.toJson()).inserted_id
         return {"Result" : "Success", "SkillId" : str(queryId)}
 
