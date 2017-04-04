@@ -1,8 +1,8 @@
 from validationerror import ValidationError
 
-class SkillValidator(object):
+class QueryValidator(object):
     def validateInput(self, inputJson):
-        expectedKeys = [u'skillName', u'mainLogic', u'skillDescription', u'inputDefinition', u'outputDefinition', u'commonKnowledge']
+        expectedKeys = [u'queryName', u'mainLogic', u'queryDescription', u'inputDefinition', u'outputDefinition', u'devicesUsed']
         for key in expectedKeys:
             if key not in inputJson:
                 print key
