@@ -1,8 +1,12 @@
 import requests
 import json
 
+r = requests.get("http://localhost:8080/deleteQuery/deviceNeededQuery")
+print r.text
+
 mainLogic = """
 canTurnOff("AirConditioner") :- userNotHome, deviceOn("AirConditioner"), decreasingTemp.
+
 decreasingTemp :- temperature(Degrees, Time), temperature(Degrees1, Time1), Time > Time1, Degrees < Degrees1.
 userNotHome :- movement("John", Time), movement("John", Time1), Time > Time1, currentTime(CTime), CTime-Time > 90.
 
@@ -11,13 +15,14 @@ currentTime(1180).
 
 queryInput =  { "predicates" : [] }
 
-queryOutput =   { "predicates" : [
-{"canTurnOff": {
-        "name": "canTurnOff",
-        "arity": 1,
-        "variableNames" : ["DeviceName"]
-}}
-                                 ]
+queryOutput =   {
+        "predicates" :
+        {
+            "canTurnOff": {
+                    "arity": 1,
+                    "variableNames" : ["DeviceName"]
+            }
+        }
 }
 
 
@@ -70,4 +75,4 @@ queryDefinition["queryDescription"] = "Determine if a device can be switched off
 
 r = requests.post("http://localhost:8080/addQuery", json=queryDefinition)
 
-print r.text
+print json.dumps(r.text, indent=4)

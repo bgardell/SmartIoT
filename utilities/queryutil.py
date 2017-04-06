@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import base64
+import os
 
 from validators.queryvalidator import QueryValidator
 from validators.validationerror import ValidationError
@@ -28,9 +29,15 @@ class QueryHandler:
 
     def deleteQuery(self, queryName):
         try:
-            self.queryCollection[queryName].remove({"queryName" : queryName })
+            removeResult = self.queryCollection[queryName].remove({"queryName" : queryName })
+            fileString = "../scenarios/" + queryName
+            if os.path.exists(fileString):
+                os.remove(fileString)
         except Exception as e:
             print "Could not delete query " + e.message
+            return {"Result" : "Failure", "Reason" : e.message}
+        print "Deleted --- " + str(removeResult)
+        return {"Result" : "Success"}
 
     def getQueryInfo(self, queryName):
         queryBson = self.queryCollection.find_one({"queryName": queryName})

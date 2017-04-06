@@ -40,6 +40,13 @@ class ASPWeb(object):
     @cherrypy.expose
     @cherrypy.popargs('queryName')
     @cherrypy.tools.json_out()
+    def deleteQuery(self, queryName):
+        addQueryResult = self.queryHandler.deleteQuery(queryName)
+        return addQueryResult
+
+    @cherrypy.expose
+    @cherrypy.popargs('queryName')
+    @cherrypy.tools.json_out()
     def getQueryInfo(self, queryName):
         queryInfo = self.queryHandler.getQueryInfo(queryName)
         queryInfo.pop("mainLogic")
@@ -69,7 +76,6 @@ class ASPWeb(object):
 
         if queryInfo is None:
             return {"Result": "Failure", "Reason": "Unable to fetch query info. Does this query exist?"}
-
         solverOutput = self.clingoSolver.solveQueryWithDeviceDatabase(queryInfo)
         return {"output" : str(solverOutput)}
 

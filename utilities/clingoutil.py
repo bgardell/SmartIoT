@@ -3,7 +3,6 @@ from symbolprocessor.processor import Predicate, ModelProcessor
 from deviceutil import DeviceHandler
 import os.path
 
-
 class ClingoSolver(object):
     mProcessor = ModelProcessor()
 
@@ -50,23 +49,26 @@ class ClingoSolver(object):
 
         try:
             if os.path.exists(fileString):
-                prg.load("../scenarios/" + queryInfo["queryName"])
+                prg.load(fileString)
             else:
                 with open(fileString, "w+") as f:
                     f.write(queryInfo["mainLogic"])
+                prg.load(fileString)
         except Exception, e:
             print e.message
             print e.args
             return {"Result" : "Failure", "Reason" : "Could not load main logic"}
 
-        devicesUsed = queryInfo["devicesUsed"]
-        databasePredicates = deviceHandler.mapCurrentDataToPredicates(devicesUsed)
-        print databasePredicates
+        dataMappingInfo = queryInfo["devicesUsed"]
+        databasePredicates = deviceHandler.mapCurrentDataToPredicates(dataMappingInfo)
         with prg.builder() as prgBuilder:
             for dbPredicate in databasePredicates:
                 parse_program(dbPredicate + '.', lambda addTerm: prgBuilder.add(addTerm))
         try:
-            solverOutput = self.mProcessor.solveControlRawOutput(prg)
+            print "--- SOLVING WITH OUTPUT DEFINITION --- "
+            print queryInfo["outputDefinition"]
+            solverOutput = self.mProcessor.solveControlRawOutput(queryInfo["outputDefinition"][u'predicates'], prg)
+
             return solverOutput
         except Exception as e:
             print e

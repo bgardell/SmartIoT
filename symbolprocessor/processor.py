@@ -71,7 +71,7 @@ class ModelProcessor:
 
         return modelJson
 
-    def solveControlRawOutput(self, control):
+    def solveControlRawOutput(self, outputDefinition, control):
         control.ground([("base", [])])
         solveFuture = control.solve_async(self._on_model, self._on_finish)
         solveFuture.wait()
@@ -81,8 +81,20 @@ class ModelProcessor:
             return {}
 
         symbols = self.modelSymbols.pop()
+        modelJson = {"predicatesJSON" : [], "rawPredicates": []}
 
-        return symbols
+        for symbol in symbols:
+            if symbol.name in outputDefinition:
+                try:
+                    predicateToAdd = Predicate(outputDefinition, symbol)
+                    modelJson["predicatesJSON"].append( predicateToAdd.termJson )
+                except Exception, e:
+                    print "--- EXCEPTION ---"
+                    print e
+            else:
+                modelJson["rawPredicates"].append(symbol)
+
+        return modelJson
 
     def _on_model(self, model):
         self.modelSymbols.append( model.symbols(terms=True, shown=True) )
@@ -115,13 +127,14 @@ class Predicate:
 
     def __init__(self, termDefinitions=None, symbol=None):
         if termDefinitions != None and symbol != None:
+            print "--- CONVERTING SYMBOL ---"
+            print termDefinitions
             self.termJson = {}
             self.name = ""
             if symbol.type == SymbolType.Function:
                 self.name = symbol.name
                 self.termDefinition = termDefinitions[self.name]
                 symArgs = symbol.arguments # Actual Values
-
                 varNames = termDefinitions[self.name]["variableNames"] # Name Lookup
 
                 if len(varNames) != len(symArgs):
