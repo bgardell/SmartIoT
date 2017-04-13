@@ -1,5 +1,4 @@
 import requests
-import base64
 
 # Current Devices Used Posts To Hub In Regular Intervals
 currentDevices = {

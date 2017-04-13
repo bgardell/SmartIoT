@@ -17,9 +17,7 @@ class ASPWeb(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def addDeviceData(self, deviceName):
-        print "test"
         deviceData = cherrypy.request.json
-        print deviceData
         addDataResult = self.deviceHandler.addData(deviceName, deviceData)
         return addDataResult
 

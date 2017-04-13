@@ -64,6 +64,8 @@ devices = [{
     }
 ]
 
+dependsOn = ["testQuery"]
+
 queryDefinition = {}
 
 queryDefinition["queryName"] = "deviceNeededQuery"
@@ -71,8 +73,10 @@ queryDefinition["mainLogic"] = mainLogic
 queryDefinition["inputDefinition"] = queryInput
 queryDefinition["outputDefinition"] = queryOutput
 queryDefinition["devicesUsed"] = devices
+queryDefinition["dependsOn"] = dependsOn
 queryDefinition["queryDescription"] = "Determine if a device can be switched off"
 
+print queryDefinition
 r = requests.post("http://localhost:8080/addQuery", json=queryDefinition)
 
 print json.dumps(r.text, indent=4)

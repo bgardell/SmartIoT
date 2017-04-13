@@ -1,10 +1,12 @@
 from clingo import *
 from symbolprocessor.processor import Predicate, ModelProcessor
 from deviceutil import DeviceHandler
+from queryutil import QueryHandler
 import os.path
 
 class ClingoSolver(object):
     mProcessor = ModelProcessor()
+    queryHandler = QueryHandler()
 
     def validateInput(self, inputDef, input):
         pass
@@ -43,6 +45,12 @@ class ClingoSolver(object):
             return {"Result": "Failed", "Reason": e.message}
 
     def solveQueryWithDeviceDatabase(self, queryInfo):
+        dependantOutput = []
+        if "dependsOn" in queryInfo:
+            for dependantQuery in queryInfo["dependsOn"]:
+                dependantQueryInfo = self.queryHandler.getQueryInfo(dependantQuery)
+                queryOutput = self.solveQueryWithDeviceDatabase(dependantQueryInfo)
+                dependantOutput.extend(queryOutput["predicatesJSON"])
         deviceHandler = DeviceHandler()
         prg = Control()
         fileString = "../scenarios/" + queryInfo["queryName"]

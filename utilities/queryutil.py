@@ -12,6 +12,7 @@ class QueryHandler:
         self.queryCollection = self.queryDb["queries"]
         self.queryValidator = QueryValidator()
 
+
     def addQuery(self, queryInfo):
         queryName = queryInfo["queryName"]
         try:
@@ -29,7 +30,8 @@ class QueryHandler:
 
     def deleteQuery(self, queryName):
         try:
-            removeResult = self.queryCollection[queryName].remove({"queryName" : queryName })
+            print "Deleting --- " + queryName
+            removeResult = self.queryCollection.remove({"queryName" : queryName })
             fileString = "../scenarios/" + queryName
             if os.path.exists(fileString):
                 os.remove(fileString)
@@ -68,6 +70,7 @@ class Query:
         self.queryLogic = queryJson["mainLogic"]
         self.queryInput = queryJson["inputDefinition"]
         self.queryOutput = queryJson["outputDefinition"]
+        self.queryDependencies = queryJson["dependsOn"]
         self.devicesUsed = queryJson["devicesUsed"]
 
     def toJson(self):
@@ -77,4 +80,5 @@ class Query:
         queryJson["inputDefinition"] = self.queryInput
         queryJson["outputDefinition"] = self.queryOutput
         queryJson["devicesUsed"] = self.devicesUsed
+        queryJson["dependsOn"] = self.queryDependencies
         return queryJson
