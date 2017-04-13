@@ -7,7 +7,7 @@ import json
 from bson import json_util
 
 from termprocessor.processor import ModelProcessor, Term
-from utilities.userutil import UserHandler
+from queries.user import UserHandler
 
 @cherrypy.popargs('user')
 class ASPWeb(object):

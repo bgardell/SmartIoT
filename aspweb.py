@@ -1,9 +1,9 @@
 import cherrypy
 
 from symbolprocessor.processor import ModelProcessor
-from utilities.deviceutil import DeviceHandler
-from utilities.queryutil import QueryHandler
-from utilities.clingoutil import ClingoSolver
+from queries.database import DeviceHandler
+from queries.query import QueryHandler
+from queries.solver import ClingoSolver
 
 class ASPWeb(object):
     terms = []

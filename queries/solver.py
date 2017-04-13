@@ -1,7 +1,7 @@
 from clingo import *
 from symbolprocessor.processor import Predicate, ModelProcessor
-from deviceutil import DeviceHandler
-from queryutil import QueryHandler
+from database import DeviceHandler
+from query import QueryHandler
 import os.path
 
 class ClingoSolver(object):
