@@ -44,6 +44,10 @@ devices2 = [
     }
 ]
 
+knowledgeDependencies = {"externalServices": [],
+                         "queries": []
+                        }
+
 
 queryDefinition = {}
 
@@ -52,6 +56,7 @@ queryDefinition["mainLogic"] = mainLogic
 queryDefinition["inputDefinition"] = queryInput
 queryDefinition["outputDefinition"] = queryOutput
 queryDefinition["devicesUsed"] = devices2
+queryDefinition["knowledgeDependencies"] = knowledgeDependencies
 queryDefinition["queryDescription"] = "Return a list of groceries needed"
 
 r = requests.post("http://localhost:8080/addQuery", json=queryDefinition)

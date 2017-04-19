@@ -1,0 +1,7 @@
+The event listener will poll devices for data.
+Determinations of how an event will occur will be defined in an event definition logic program
+event("UserLayDown") :- predicate1, predicate2, legsOnFloor, headOnFloor(etc)
+
+Reactions to events will be defined in an event reaction logic program
+
+event("userLayDown") causes callEmergencyServices if

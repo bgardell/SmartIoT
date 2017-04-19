@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-class DeviceHandler:
+class DeviceDatabase:
     def __init__(self):
         self.client = MongoClient()
         self.deviceDb = self.client.deviceDb
@@ -14,7 +14,6 @@ class DeviceHandler:
     def clearDeviceData(self, deviceName):
         self.deviceDb[deviceName].remove({})
         return {"Result" : "Success"}
-
 
     # This method maps data to predicates based on data mapping definition typically
     # defined in a query definition. For more information visit the documentation
@@ -47,11 +46,15 @@ class DeviceHandler:
                     mappedData = {}
         return predicates
 
-
+    #Converts a predicate to a predicate string.
+    #This allows for the clingo API to parse the program
     def _convertPredicateToString(self, predicate, variableOrder):
         predicateString = predicate["name"] + "("
         for variable in variableOrder:
-            predicateString += str(predicate[variable]) + ","
+            if isinstance(predicate[variable], int):
+                predicateString += str(predicate[variable]) + ","
+            else:
+                predicateString += "\"" + str(predicate[variable]) + "\"" + ","
 
         predicateString = predicateString[:-1] +")"
 

@@ -1,14 +1,15 @@
 import cherrypy
 
-from symbolprocessor.processor import ModelProcessor
-from queries.database import DeviceHandler
+from answersetsolving.solver import ClingoSolver
+from database.devicedb import DeviceDatabase
+from database.querydb import QueryDatabase
 from queries.query import QueryHandler
-from queries.solver import ClingoSolver
+from processors.answerset import JsonAndPredicateProcessor
 
 class ASPWeb(object):
-    terms = []
-    mProcessor = ModelProcessor()
-    deviceHandler = DeviceHandler()
+    mProcessor = JsonAndPredicateProcessor()
+    deviceDatabase = DeviceDatabase()
+    queryDatabase = QueryDatabase()
     queryHandler = QueryHandler()
     clingoSolver = ClingoSolver()
 
@@ -18,13 +19,13 @@ class ASPWeb(object):
     @cherrypy.tools.json_out()
     def addDeviceData(self, deviceName):
         deviceData = cherrypy.request.json
-        addDataResult = self.deviceHandler.addData(deviceName, deviceData)
+        addDataResult = self.deviceDatabase.addData(deviceName, deviceData)
         return addDataResult
 
     @cherrypy.popargs('deviceName')
     @cherrypy.expose
     def clearDeviceData(self, deviceName):
-        clearDataResult = self.deviceHandler.clearDeviceData(deviceName)
+        clearDataResult = self.deviceDatabase.clearDeviceData(deviceName)
         return clearDataResult
 
     @cherrypy.expose
@@ -32,37 +33,22 @@ class ASPWeb(object):
     @cherrypy.tools.json_out()
     def addQuery(self):
         queryJson = cherrypy.request.json
-        addQueryResult = self.queryHandler.addQuery(queryJson)
+        addQueryResult = self.queryDatabase.addQuery(queryJson)
         return addQueryResult
 
     @cherrypy.expose
     @cherrypy.popargs('queryName')
     @cherrypy.tools.json_out()
     def deleteQuery(self, queryName):
-        addQueryResult = self.queryHandler.deleteQuery(queryName)
+        addQueryResult = self.queryDatabase.deleteQuery(queryName)
         return addQueryResult
 
     @cherrypy.expose
     @cherrypy.popargs('queryName')
     @cherrypy.tools.json_out()
     def getQueryInfo(self, queryName):
-        queryInfo = self.queryHandler.getQueryInfo(queryName)
-        queryInfo.pop("mainLogic")
+        queryInfo = self.queryDatabase.getQueryInfo(queryName)
         return queryInfo
-
-    @cherrypy.expose
-    @cherrypy.popargs('queryName')
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
-    def useQueryWithInput(self, queryName):
-        queryInput = cherrypy.request.json
-
-        queryInfo = self.queryHandler.getQueryInfo(queryName)
-	if queryInfo is None:
-            return {"Result" : "Failure", "Reason" : "Unable to fetch query info. Does this query exist?"}
-
-        solverOutput = self.clingoSolver.solveSkillWithInput(queryInfo, queryInput)
-        return solverOutput
 
     @cherrypy.expose
     @cherrypy.popargs('queryName')
@@ -70,12 +56,9 @@ class ASPWeb(object):
     @cherrypy.tools.json_out()
     def useQueryWithDatabase(self, queryName):
         print "Using Query"
-        queryInfo = self.queryHandler.getQueryInfo(queryName)
-
-        if queryInfo is None:
-            return {"Result": "Failure", "Reason": "Unable to fetch query info. Does this query exist?"}
-        solverOutput = self.clingoSolver.solveQueryWithDeviceDatabase(queryInfo)
-        return {"output" : str(solverOutput)}
+        solverOutput = self.queryHandler.solveQueryOutputJson(queryName)
+        print solverOutput
+        return solverOutput
 
     @cherrypy.expose
     @cherrypy.tools.json_out()

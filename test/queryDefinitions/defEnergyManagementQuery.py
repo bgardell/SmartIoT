@@ -64,7 +64,9 @@ devices = [{
     }
 ]
 
-dependsOn = ["testQuery"]
+knowledgeDependencies = {"externalServices": [],
+                         "queries": ["whatGroceries"]
+                        }
 
 queryDefinition = {}
 
@@ -73,7 +75,7 @@ queryDefinition["mainLogic"] = mainLogic
 queryDefinition["inputDefinition"] = queryInput
 queryDefinition["outputDefinition"] = queryOutput
 queryDefinition["devicesUsed"] = devices
-queryDefinition["dependsOn"] = dependsOn
+queryDefinition["knowledgeDependencies"] = knowledgeDependencies
 queryDefinition["queryDescription"] = "Determine if a device can be switched off"
 
 print queryDefinition
