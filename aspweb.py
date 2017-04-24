@@ -11,7 +11,6 @@ class ASPWeb(object):
     deviceDatabase = DeviceDatabase()
     queryDatabase = QueryDatabase()
     queryHandler = QueryHandler()
-    clingoSolver = ClingoSolver()
 
     @cherrypy.popargs('deviceName')
     @cherrypy.expose

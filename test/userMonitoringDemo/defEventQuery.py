@@ -7,6 +7,7 @@ print r.text
 mainLogic = """
 fellDown(Time) :- lyingDown(Time), upright(Time2), Time2-Time < 5.
 event("fellDown") :- fellDown(_).
+triggerQuery("userStatusQuery") :- event("fellDown").
 
 lyingDown(Time) :- legsOnFloor(Time), upperBodyOnFloor(Time).
 upright(Time) :- ypos("rightKnee", YCoord, Time), ypos("leftKnee", YCoord2, Time), YCoord > 3, YCoord2 > 3.

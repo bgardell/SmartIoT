@@ -60,4 +60,3 @@ r = requests.get("http://localhost:8080/useQueryWithDatabase/objectSensorEventDe
 print r.text
 
 requests.get("http://localhost:8080/clearDeviceData/ObjectSensor")
-
