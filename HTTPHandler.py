@@ -1,12 +1,11 @@
 import cherrypy
 
-from answersetsolving.solver import ClingoSolver
 from database.devicedb import DeviceDatabase
 from database.querydb import QueryDatabase
 from queries.query import QueryHandler
 from processors.answerset import JsonAndPredicateProcessor
 
-class ASPWeb(object):
+class HTTPService(object):
     mProcessor = JsonAndPredicateProcessor()
     deviceDatabase = DeviceDatabase()
     queryDatabase = QueryDatabase()
@@ -64,11 +63,4 @@ class ASPWeb(object):
     def getQueryList(self):
         queryInfo = self.queryHandler.getAllQueries()
         return queryInfo
-    
-cherrypy.config.update({'server.socket_host': '0.0.0.0'})
-cherrypy.config.update({'tools.staticdir.on': True,
-                'tools.staticdir.dir':
-                '/home/ubuntu/aspWeb/schedulerHTML'
-                               })
 
-cherrypy.quickstart(ASPWeb())
