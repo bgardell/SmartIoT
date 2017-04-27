@@ -18,13 +18,13 @@ class ClingoSolver(object):
         try:
             prg.load(logicFile)
         except Exception, e:
+            print "Exception in Clingo solver when trying to load program"
             print e.message
             print e.args
             return {"Result" : "Failure", "Reason" : "Could not load main logic"}
 
         with prg.builder() as prgBuilder:
             for predicate in predicatesList:
-                print predicate
                 parse_program(predicate + '.', lambda symbol: prgBuilder.add(symbol))
         try:
             print "--- Solving Program ---"
@@ -33,6 +33,7 @@ class ClingoSolver(object):
             solveFuture.wait()
             return self.modelSymbols.pop()
         except Exception as e:
+            print "Exception in Clingo solver when trying to solve the program"
             print e
             return {"Result": "Failed", "Reason": e.message}
 

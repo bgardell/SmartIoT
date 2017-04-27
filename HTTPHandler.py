@@ -1,11 +1,11 @@
 import cherrypy
-
+from multiprocessing import Process
 from database.devicedb import DeviceDatabase
 from database.querydb import QueryDatabase
-from queries.query import QueryHandler
+from netquery.query import QueryHandler
 from processors.answerset import JsonAndPredicateProcessor
 
-class HTTPService(object):
+class HTTPService(Process):
     mProcessor = JsonAndPredicateProcessor()
     deviceDatabase = DeviceDatabase()
     queryDatabase = QueryDatabase()
@@ -53,7 +53,6 @@ class HTTPService(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def useQueryWithDatabase(self, queryName):
-        print "Using Query"
         solverOutput = self.queryHandler.solveQueryOutputJson(queryName)
         print solverOutput
         return solverOutput

@@ -7,7 +7,7 @@
     energy bluetooth devices or other file formats
 '''
 
-from clingo import Symbol, SymbolType, Function, Number, String, parse_term
+from clingo import SymbolType, Function, Number, String, parse_term
 import json
 
 class JsonAndPredicateProcessor:
@@ -50,9 +50,7 @@ class JsonAndPredicateProcessor:
 
     def answerSetToJson(self, outputDefinition, answerSetSymbols):
         modelJson = {"predicatesJSON" : [], "rawPredicates": []}
-        print outputDefinition
         for symbol in answerSetSymbols:
-            print "-- " + str(symbol)
             if symbol.name in outputDefinition["predicates"]:
                 try:
                     predicateToAdd = Predicate(outputDefinition["predicates"], symbol)
@@ -93,8 +91,6 @@ class Predicate:
 
     def __init__(self, termDefinitions=None, symbol=None):
         if termDefinitions != None and symbol != None:
-            print "--- CONVERTING SYMBOL ---"
-            print termDefinitions
             self.termJson = {}
             self.name = ""
             if symbol.type == SymbolType.Function:

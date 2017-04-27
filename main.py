@@ -1,13 +1,16 @@
 from HTTPHandler import HTTPService
 from MQTTHandler import MQTTService
-
+from eventdetection.listener import EventListener
 import cherrypy
 
-cherrypy.config.update({'server.socket_host': '0.0.0.0'})
-cherrypy.config.update({'tools.staticdir.on': True,
-                'tools.staticdir.dir':
-                '/home/ubuntu/aspWeb/schedulerHTML'
-                               })
+def startHTTP():
+    cherrypy.config.update({'server.socket_host': '0.0.0.0'})
+    cherrypy.quickstart(HTTPService())
 
-cherrypy.quickstart(HTTPService())
-MQTTService()
+def startMQTT():
+    MQTTService()
+
+def startEventListeners():
+    el = EventListener("objectSensorEventDetector", 2)
+
+startHTTP()

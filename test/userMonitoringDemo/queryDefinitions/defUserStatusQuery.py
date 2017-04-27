@@ -45,6 +45,7 @@ fellDown.
 queryInput =  { "predicates" : [] }
 
 queryOutput =   {
+        "locations" : ["http://localhost:8088/alertDevice"],
         "predicates" :
         {
             "event": {

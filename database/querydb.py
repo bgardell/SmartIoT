@@ -1,8 +1,8 @@
 import os
 from pymongo import MongoClient
 
-from queries.validators.queryvalidator import QueryValidator
-from queries.validators.validationerror import ValidationError
+from netquery.validators.queryvalidator import QueryValidator
+from netquery.validators.validationerror import ValidationError
 
 class QueryDatabase:
     def __init__(self):
@@ -45,10 +45,10 @@ class QueryDatabase:
         return queryJson
 
     def getAllQueries(self):
-        allQueries = {"queries":[]}
+        allQueries = {"netquery":[]}
         queriesBson = self.queryCollection.find()
         for query in queriesBson:
-            allQueries["queries"].append(self.queryToJson(query))
+            allQueries["netquery"].append(self.queryToJson(query))
         return allQueries
 
     def queryToJson(self, query):

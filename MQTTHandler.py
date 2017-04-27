@@ -1,3 +1,3 @@
 class MQTTService:
     def __init__(self):
-        pass
+        print "Init MQTT Service"
