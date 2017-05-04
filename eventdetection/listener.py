@@ -14,4 +14,8 @@ class EventListener():
 
     def executeQuery(self):
         triggers = self.queryHandler.solveQueryOutputJson(self.eventListenerName)
+        print triggers
+        for trigger in triggers["predicatesJSON"]:
+            queryOutput = self.queryHandler.solveQueryOutputJson(trigger["QueryName"])
+            print queryOutput
         Timer(self.period, self.executeQuery).start()

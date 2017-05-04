@@ -1,5 +1,5 @@
-from HTTPHandler import HTTPService
-from MQTTHandler import MQTTService
+from HTTPService import HTTPService
+from MQTTService import MQTTService
 from eventdetection.listener import EventListener
 import cherrypy
 

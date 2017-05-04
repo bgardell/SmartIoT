@@ -33,8 +33,6 @@ class DeviceDatabase:
                     for variable in mappingVariables:
                         #Lookup in the definition which data key gives us our variable term atom.
                         dataRecordKey = mapping["recordData"][variable]
-                        print dataRecord
-                        print dataRecordKey
                         dataRecordValue = dataRecord[dataRecordKey]
                         #Convert BSON float data to int if needed
                         if type(dataRecordValue) == float:

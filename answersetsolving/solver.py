@@ -12,7 +12,7 @@ class ClingoSolver(object):
     def validateInput(self, inputDef, input):
         pass
 
-    def solveProgram(self, logicFile=None, predicatesList=None):
+    def solveProgram(self, logicFile=None, predicatesList=None, prgName="base"):
         prg = Control()
         self.modelSymbols = []
         try:
@@ -28,7 +28,7 @@ class ClingoSolver(object):
                 parse_program(predicate + '.', lambda symbol: prgBuilder.add(symbol))
         try:
             print "--- Solving Program ---"
-            prg.ground([("base", [])])
+            prg.ground([(prgName, [])])
             solveFuture = prg.solve_async(self._on_model, self._on_finish)
             solveFuture.wait()
             return self.modelSymbols.pop()

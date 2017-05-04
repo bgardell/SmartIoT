@@ -1,7 +1,45 @@
 import cherrypy
 
 class MockService(object):
-    objectSensorData = [
+
+    objectSensorQueryCount = 1
+
+    objectSensorData1 = [
+        {"jointName": "rightKnee", "ypos": 3, "time": 1},
+        {"jointName": "leftKnee", "ypos": 3, "time": 1},
+        {"jointName": "rightFoot", "ypos": 1, "time": 1},
+        {"jointName": "leftFoot", "ypos": 1, "time": 1},
+        {"jointName": "rightHand", "ypos": 9, "time": 1},
+        {"jointName": "leftHand", "ypos": 9, "time": 1},
+        {"jointName": "head", "ypos": 10, "time": 1}]
+
+
+    objectSensorData2 = [
+        {"jointName": "rightKnee", "ypos": 3, "time": 1},
+        {"jointName": "leftKnee", "ypos": 3, "time": 1},
+        {"jointName": "rightFoot", "ypos": 1, "time": 1},
+        {"jointName": "leftFoot", "ypos": 1, "time": 1},
+        {"jointName": "rightHand", "ypos": 9, "time": 1},
+        {"jointName": "leftHand", "ypos": 9, "time": 1},
+        {"jointName": "head", "ypos": 10, "time": 1},
+
+        {"jointName": "rightKnee", "ypos": 3, "time": 2},
+        {"jointName": "leftKnee", "ypos": 3, "time": 2},
+        {"jointName": "rightFoot", "ypos": 1, "time": 2},
+        {"jointName": "leftFoot", "ypos": 1, "time": 2},
+        {"jointName": "rightHand", "ypos": 9, "time": 2},
+        {"jointName": "leftHand", "ypos": 9, "time": 2},
+        {"jointName": "head", "ypos": 10, "time": 2},
+
+        {"jointName": "rightKnee", "ypos": 3, "time": 3},
+        {"jointName": "leftKnee", "ypos": 3, "time": 3},
+        {"jointName": "rightFoot", "ypos": 1, "time": 3},
+        {"jointName": "leftFoot", "ypos": 1, "time": 3},
+        {"jointName": "rightHand", "ypos": 6, "time": 3},
+        {"jointName": "leftHand", "ypos": 6, "time": 3},
+        {"jointName": "head", "ypos": 10, "time": 3}]
+
+    objectSensorData3 = [
         {"jointName": "rightKnee", "ypos": 3, "time": 1},
         {"jointName": "leftKnee", "ypos": 3, "time": 1},
         {"jointName": "rightFoot", "ypos": 1, "time": 1},
@@ -54,7 +92,7 @@ class MockService(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def getObjectSensorData(self):
-        return self.objectSensorData
+        return self.objectSensorData3
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
