@@ -14,9 +14,11 @@ class ModelProcessor:
     termDefinitions = {}
     modelTerms = []
     models = []
+    modelSymbols = []
 
-    def __init__(self):
-        self.loadTermDefinitions()
+    def __init__(self, fromFile=False):
+        if fromFile:
+            self.loadTermDefinitions()
 
     def loadTermDefinitions(self):
         with open('terms.json') as termDefFile:
@@ -47,39 +49,61 @@ class ModelProcessor:
             json.dump(self.termDefinitions, termFile, indent=4)
 
     def addSymbol(self, symbol):
-        term = Term(self.termDefinitions, symbol)
+        term = Predicate(self.termDefinitions, symbol)
         self.modelTerms.append(term)
 
     def solveControl(self, control):
-        try:
-            control.ground([("base", [])])
-            solveFuture = control.solve_async(self._on_model, self._on_finish)
-            solveFuture.wait()
-            for term in self.modelSymbols[0]:
-                self.addSymbol(term)
+        control.ground([("base", [])])
+        solveFuture = control.solve_async(self._on_model, self._on_finish)
+        solveFuture.wait()
 
-            modelJson = []
-            for term in self.modelTerms:
-                modelJson.append( term.termJson )
-            print modelJson
-            print " Model JSON: "
-            self.modelTerms = []
+        modelJson = {"predicates" : []}
+        #If unsat, list will be empty.
+        if len(self.modelSymbols) == 0:
             return modelJson
-        except Exception as e:
-            print "Term not defined or input incorrect! Issue was with " + e.message
-        
-        return []
-    
+
+        symbols = self.modelSymbols.pop()
+
+        for symbol in range(0, len(symbols)):
+            print symbols[symbol]
+            predicateToAdd = Predicate(self.termDefinitions, symbols[symbol])
+            modelJson["predicates"].append( predicateToAdd.termJson )
+
+        return modelJson
+
+    def solveControlRawOutput(self, outputDefinition, control):
+        control.ground([("base", [])])
+        solveFuture = control.solve_async(self._on_model, self._on_finish)
+        solveFuture.wait()
+
+        #If unsat, list will be empty.
+        if len(self.modelSymbols) == 0:
+            return {}
+
+        symbols = self.modelSymbols.pop()
+        modelJson = {"predicatesJSON" : [], "rawPredicates": []}
+
+        for symbol in symbols:
+            if symbol.name in outputDefinition:
+                try:
+                    predicateToAdd = Predicate(outputDefinition, symbol)
+                    modelJson["predicatesJSON"].append( predicateToAdd.termJson )
+                except Exception, e:
+                    print "--- EXCEPTION ---"
+                    print e
+            else:
+                modelJson["rawPredicates"].append(symbol)
+
+        return modelJson
+
     def _on_model(self, model):
-        self.modelSymbols = []
         self.modelSymbols.append( model.symbols(terms=True, shown=True) )
 
     def _on_finish(self, res, didCancel=False):
-        print res
-    
-    
+        pass
+ 
     def jsonToSymbol(self, jsonSymbol):
-        symbolName = jsonSymbol["name"]
+        symbolName = jsonSymbol["predicateName"]
         symbolArgs = []
         for varName in self.termDefinitions[symbolName]["variableNames"]:
             symVar = jsonSymbol[varName]
@@ -97,20 +121,25 @@ class ModelProcessor:
         funcSymbol = Function(symbolName, symbolArgs)
         return funcSymbol
 
-class Term:
+class Predicate:
     name = ""
     termJson = {}
 
     def __init__(self, termDefinitions=None, symbol=None):
         if termDefinitions != None and symbol != None:
+            print "--- CONVERTING SYMBOL ---"
+            print termDefinitions
             self.termJson = {}
             self.name = ""
             if symbol.type == SymbolType.Function:
                 self.name = symbol.name
                 self.termDefinition = termDefinitions[self.name]
                 symArgs = symbol.arguments # Actual Values
-
                 varNames = termDefinitions[self.name]["variableNames"] # Name Lookup
+
+                if len(varNames) != len(symArgs):
+                    raise Exception("Output definition did not match up with logic program output!")
+
                 self.termJson.update({"name": self.name})
 
                 for ix in range(0, len(symArgs)):
@@ -119,12 +148,20 @@ class Term:
                     elif symArgs[ix].type == SymbolType.Number:
                         self.termJson.update({varNames[ix]: symArgs[ix].number})
                     else:
-                        funcTerm = Term(termDefinitions, symArgs[ix])
+                        funcTerm = Predicate(termDefinitions, symArgs[ix])
                         self.termJson.update({varNames[ix] : funcTerm.termJson })
 
-    def termFromJson(self, termDefinitions, symbolJson):
+    def predicateFromJson(self, termDefinitions, symbolJson):
         self.termJson = symbolJson
-        self.name = symbolJson["name"]
+        self.name = self.termJson['name']
+
+    def fromInputJson(self, termDefinitions, predicateJson):
+        self.name = predicateJson["predicateName"]
+        self.termJson = predicateJson
+    
+    def predicateFromBson(self, termDefinitions, symbolJson):
+        self.termJson = json.loads(symbolJson)
+        self.name = self.termJson['name']
     
     def toSymbol(self, modelProcessor):
         return modelProcessor.jsonToSymbol(self.termJson)
