@@ -1,13 +1,19 @@
 import clingo
 
-def on_model(model):
-    print model
+class QueryDefinitionProcessor:
+    def on_model(self, model):
+        print model
 
-def on_finish(res):
-    print res
+    def on_finish(self, res):
+        print res
 
-prg = clingo.Control()
-prg.load("defTest.lp")
-prg.ground([("definitions", [])])
-solveFuture = prg.solve_async(on_model, on_finish)
-solveFuture.wait()
+    def setupQueryFromDefinition(self):
+        prg = clingo.Control()
+        prg.load("defTest.lp")
+        prg.ground([("definitions", [])])
+        solveFuture = prg.solve_async(self.on_model, self.on_finish)
+        solveFuture.wait()
+
+
+queryDefiner = QueryDefinitionProcessor()
+queryDefiner.setupQueryFromDefinition()
